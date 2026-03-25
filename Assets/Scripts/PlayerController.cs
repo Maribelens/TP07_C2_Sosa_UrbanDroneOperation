@@ -88,12 +88,15 @@ public class PlayerController : MonoBehaviour
         if (Time.time - lastHitTime < hitCooldown) return;
         lastHitTime = Time.time;
 
-        float impactForce = collision.relativeVelocity.magnitude;
-
-        if(impactForce > 2f)
+        if (collision.gameObject.CompareTag("Blocks"))
         {
-            float damage = impactForce * 2f;
-            droneHealth.TakeDamage(damage);
+            float impactForce = collision.relativeVelocity.magnitude;
+
+            if (impactForce > 2f)
+            {
+                float damage = impactForce * 2f;
+                droneHealth.TakeDamage(damage);
+            }
         }
     }
 
