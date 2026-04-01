@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
-
 public class FsmManager : MonoBehaviour
 {
+
     [SerializeField] private Animator animator;
     private List<StateBase> states = new List<StateBase>();
     private StateBase currentState;
@@ -15,15 +15,19 @@ public class FsmManager : MonoBehaviour
 
         states.Add(new Idle());
         states.Add(new Patrol());
-        states.Add(new Chase());
-        states.Add(new Attack());
-        states.Add(new Hurt());
-        states.Add(new Die());
 
-        foreach (StateBase state in states)
+        if(npc.npcType == NPCType.Enemy)
+        {
+            states.Add(new Chase());
+            states.Add(new Attack());
+            states.Add(new Hurt());
+            states.Add(new Die());
+        }
+        foreach (StateBase state in states) 
             state.Initialize(animator, this);
-
-        currentState = FindState(State.Idle);
+        
+        currentState = FindState(StateType.Idle);
+        currentState.OnEnter();
     }
 
     private void Update()
@@ -33,7 +37,7 @@ public class FsmManager : MonoBehaviour
     }
 
     //--------------------- GESTIÓN DE ESTADOS ---------------------
-    public void SwapStateTo(State nextState)
+    public void SwapStateTo(StateType nextState)
     {
         foreach (StateBase stateBase in states)
         {
@@ -48,11 +52,11 @@ public class FsmManager : MonoBehaviour
         }
     }
 
-    public StateBase FindState (State stateToFind)
+    public StateBase FindState(StateType stateToFind)
     {
         foreach (StateBase stateBase in states)
         {
-            if (stateBase.stateType != stateToFind)
+            if (stateBase.stateType == stateToFind)
                 return stateBase;
         }
         return null;

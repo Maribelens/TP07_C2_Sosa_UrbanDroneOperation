@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 5646381731123000077}
   - component: {fileID: 739557076900308466}
   - component: {fileID: 170120765509743830}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: pavement1-10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
