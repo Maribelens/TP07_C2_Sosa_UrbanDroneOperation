@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Attack : StateBase
 {
-    public override void Initialize(Animator animator, FsmManager fsmManager)
+    public override void Initialize(Animator animator, FsmManager fsmManager, NPC npc)
     {
-        base.Initialize(animator, fsmManager);
+        base.Initialize(animator, fsmManager, npc);
         stateType = StateType.Attack;
     }
 
@@ -12,29 +12,37 @@ public class Attack : StateBase
     {
         base.OnEnter();
         animator.SetInteger(State, 3);
-        npc.agent.isStopped = true;
     }
 
     public override void OnUpdate()
     {
+        if (npc.target == null) return;
+
         float distance = npc.DistanceToPlayer();
 
-        // Si se aleja, volver a perseguir
+        //Transiciones
         if (distance > npc.attackRange)
         {
-            npc.agent.isStopped = false;
             fsm.SwapStateTo(StateType.Chase);
             return;
         }
-
-        Vector3 dir = (npc.player.position - npc.transform.position).normalized;
-        dir.y = 0;
+        
+        //Mirar al jugador
+        Vector3 dir = (npc.target.position - npc.transform.position).normalized;
         npc.transform.forward = dir;
 
         if (npc.CanAttack())
         {
             npc.DoAttack();
+            npc.weapon.Shoot();
+            Debug.Log("NPC dispara!");
         }
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+        //Renaudar movimiento
     }
 }
 

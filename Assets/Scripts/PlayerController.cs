@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -9,8 +10,13 @@ public class PlayerController : MonoBehaviour
     [Header("Rotacion")]
     [SerializeField] private float mouseSensitivity = 2f;
 
+    [Header("Combate")]
+    public float attackCooldown = 1.5f;
+    public float lastAttackTime;
+
     [Header("Referencias")]
-    [SerializeField] private DroneHealth droneHealth;
+    [SerializeField] private HealthSystem droneHealth;
+    [SerializeField] private Weapon weapon;
     private Rigidbody rb;
 
     [Header("Daño")]
@@ -25,13 +31,32 @@ public class PlayerController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         rb = GetComponent<Rigidbody>();
-        droneHealth = GetComponent<DroneHealth>();
+        weapon = GetComponent<Weapon>();
+        droneHealth = GetComponent<HealthSystem>();
         droneHealth.onDie += OnDie;
     }
 
     private void Update()
     {
         HandleRotation();
+        if (Input.GetMouseButtonDown(0))
+        {
+            DoAttack();
+            weapon.Shoot();
+        }
+    }
+
+    private bool CanAttack()
+    {
+        return Time.time >= lastAttackTime + attackCooldown;
+    }
+
+    private void DoAttack()
+    {
+        if (!CanAttack()) return;
+        lastAttackTime = Time.time;
+        weapon.Shoot();
+
     }
 
     private void FixedUpdate()

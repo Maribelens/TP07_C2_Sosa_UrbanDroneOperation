@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Chase : StateBase
 {
-    public override void Initialize(Animator animator, FsmManager fsmManager)
+    public override void Initialize(Animator animator, FsmManager fsmManager, NPC npc)
     {
-        base.Initialize(animator, fsmManager);
+        base.Initialize(animator, fsmManager, npc);
         stateType = StateType.Chase;
     }
 
@@ -12,14 +12,13 @@ public class Chase : StateBase
     {
         base.OnEnter();
         animator.SetInteger(State, 2);
-        npc.agent.isStopped = false;
     }
     public override void OnUpdate()
     {
         base.OnUpdate();
 
         float distance = npc.DistanceToPlayer();
-
+                                                                          
         // Si está cerca, atacar
         if (distance <= npc.attackRange)
         {
@@ -35,12 +34,11 @@ public class Chase : StateBase
         }
 
         // Perseguir
-        npc.agent.SetDestination(npc.player.position);
-
-        if (!npc.agent.isOnNavMesh)
-        {
-            Debug.LogError("No está en NavMesh");
-        }
+        npc.transform.position = Vector3.MoveTowards(
+            npc.transform.position,
+            npc.target.position,
+            npc.speed * Time.deltaTime
+        );
     }
 }
 

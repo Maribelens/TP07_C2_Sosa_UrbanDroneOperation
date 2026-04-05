@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Patrol : StateBase
 {
-    public override void Initialize(Animator animator, FsmManager fsmManager)
+    public override void Initialize(Animator animator, FsmManager fsmManager, NPC npc)
     {
-        base.Initialize(animator, fsmManager);
+        base.Initialize(animator, fsmManager, npc);
         stateType = StateType.Patrol;
     }
 
@@ -12,36 +12,31 @@ public class Patrol : StateBase
     {
         base.OnEnter();
         animator.SetInteger(State, 1);
-
-        //if (npc.waypoints.Length == 0) return;
-
-        //npc.agent.isStopped = false;
-        //npc.agent.SetDestination(npc.waypoints[npc.currentWaypoint].position);
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
-        float dist = npc.DistanceToPlayer();
-
-        if (dist < npc.attackRange)
-        {
-            fsm.SwapStateTo(StateType.Attack);
-            return;
-        }
-        if (dist < npc.detectionRange)
-        {
-            fsm.SwapStateTo(StateType.Chase);
-            return;
-        }
 
         //if (npc.waypoints.Length == 0) return;
 
-        if (!npc.agent.pathPending && npc.agent.remainingDistance < 0.5f)
-        {
-            //npc.currentWaypoint = (npc.currentWaypoint + 1) % npc.waypoints.Length;
-            //npc.agent.SetDestination(npc.waypoints[npc.currentWaypoint].position);
-        }
+        //Transform target = npc.waypoints[npc.currentWaypoint];
 
+        //npc.transform.position = Vector3.MoveTowards(
+        //    npc.transform.position,
+        //    npc.target.position,
+        //    npc.speed * Time.deltaTime
+        //);
+
+        //if (Vector3.Distance(npc.transform.position, target.position) < 0.2f)
+            //npc.currentWaypoint = (npc.currentWaypoint + 1) % npc.waypoints.Length;
+
+        // Transiciones
+        float dist = npc.DistanceToPlayer();
+        //Debug.Log($"[Patrol]Distancia al player: {dist}");
+
+        if (dist < npc.detectionRange)
+            fsm.SwapStateTo(StateType.Chase);
+        //Debug.Log("Drone detectado, cambiando a Chase");
     }
 }

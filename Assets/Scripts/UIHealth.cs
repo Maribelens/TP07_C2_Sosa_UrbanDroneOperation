@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class UIHealth : MonoBehaviour
 {
     [Header("LifeBar Panel")]
-    [SerializeField] private DroneHealth lifeTarget;
+    [SerializeField] private HealthSystem lifeTarget;
     [SerializeField] private Image lifeBar;
     [SerializeField] private TMP_Text lifeText;
 

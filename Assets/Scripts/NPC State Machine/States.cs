@@ -5,5 +5,6 @@ public enum StateType
     Patrol,
     Chase,
     Attack,
+    Hurt,
     Die
 }

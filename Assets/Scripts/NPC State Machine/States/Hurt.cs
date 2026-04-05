@@ -1,0 +1,43 @@
+using UnityEngine;
+
+public class Hurt : StateBase
+{
+    public override void Initialize(Animator animator, FsmManager fsmManager, NPC npc)
+    {
+        base.Initialize(animator, fsmManager, npc);
+        stateType = StateType.Hurt;
+    }
+
+    public override void OnEnter()
+    {
+        base.OnEnter();
+        animator.SetInteger(State, 4);
+
+        npc.hurtTimer = npc.hurtDuration;
+    }
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+        npc.hurtTimer -= Time.deltaTime;
+        npc.health.isInvulnerable = true;
+
+        if (npc.hurtTimer <= 0)
+        {
+            // Volver a comportamiento normal
+            float dist = npc.DistanceToPlayer();
+
+            if (dist <= npc.attackRange)
+                fsm.SwapStateTo(StateType.Attack);
+            else if (dist <= npc.detectionRange && npc.npcType == NPCType.Enemy)
+                fsm.SwapStateTo(StateType.Chase);
+            else
+                fsm.SwapStateTo(StateType.Patrol);
+        }
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+        npc.health.isInvulnerable = false;
+    }
+}

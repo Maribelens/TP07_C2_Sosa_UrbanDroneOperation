@@ -6,14 +6,16 @@ public abstract class StateBase
     protected Animator animator;
     protected FsmManager fsm;
     protected NPC npc;
+    //protected Projectile proejctile; 
 
     public StateType stateType = StateType.None;
 
-    public virtual void Initialize (Animator animator, FsmManager fsmManager)
+    public virtual void Initialize (Animator animator, FsmManager fsmManager, NPC npc)
     {
         this.animator = animator;
         this.fsm = fsmManager;
-        this.npc = fsmManager.GetComponent<NPC>();
+        this.npc = npc;
+        //this.npc = fsmManager.GetComponentInChildren<NPC>();
     }
     public virtual void OnEnter() 
     {
@@ -21,10 +23,10 @@ public abstract class StateBase
     }
     public virtual void OnUpdate() 
     {
-        Debug.Log($"OnUpdate de {stateType}");
+        //Debug.Log($"OnUpdate de {stateType}");
     }
     public virtual void OnExit() 
     {
-        Debug.Log($"OnExit de {stateType}");
+        //Debug.Log($"OnExit de {stateType}");
     }
 }
