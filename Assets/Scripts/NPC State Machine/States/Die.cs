@@ -18,9 +18,11 @@ public class Die : StateBase
         if (col != null) col.enabled = false;
 
         // Opcional: detener movimiento
-        npc.enabled = false;
+        npc.agent.isStopped = true;
+        //npc.enabled = false;
 
         //Oopcional: destruir despues
-        npc.gameObject.SetActive(false);
+        GameObject.Destroy(npc.gameObject, 3f);
+        //npc.gameObject.SetActive(false);
     }
 }

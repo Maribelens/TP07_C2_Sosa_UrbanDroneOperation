@@ -14,6 +14,7 @@ public class Hurt : StateBase
         animator.SetInteger(State, 4);
 
         npc.hurtTimer = npc.hurtDuration;
+        npc.health.isInvulnerable = true;
     }
     public override void OnUpdate()
     {
