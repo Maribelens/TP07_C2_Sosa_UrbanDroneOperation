@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+
 public enum NPCType
 {
     Civil,
@@ -29,6 +28,7 @@ public class NPC : MonoBehaviour
     public HealthSystem health;
     [SerializeField] private Weapon weapon;
     public NavMeshAgent agent;
+    [SerializeField] private UIScoreManager scoreUI;
 
     [Header("Combat")]
     public float attackCooldown = 1.5f;
@@ -60,31 +60,12 @@ public class NPC : MonoBehaviour
             currentWaypoint = 0; // o Random.Range(0, waypoints.Length) si querés variar
             agent.SetDestination(waypoints[currentWaypoint].position);
         }
-
-        //if (waypoints.Count > 0)
-        //{
-        //    //// Civiles empiezan en un waypoint aleatorio
-        //    //if (npcType == NPCType.Civil)
-        //    //    currentWaypoint = Random.Range(0, waypoints.Count);
-
-        //    //// Enemigos empiezan siempre en el primero (ruta fija)
-        //    //else if (npcType == NPCType.Enemy)
-
-        //agent.SetDestination(waypoints[currentWaypoint].position);
     }
 
+    
 
     private void LoadWaypoints()
     {
-        //waypoints.Clear();
-        //foreach (Transform container in waypointContainer)
-        //{
-        //    if (container == null) continue;
-        //    for (int i = 0; i < container.childCount; i++)
-        //    {
-        //        waypoints.Add(container.GetChild(i));
-        //    }
-        //}
 
         if (waypointContainer != null)
         {
@@ -162,13 +143,17 @@ public void ChasePLayer()
 
     private void HandleTakeDamage()
     {
-        if (fsm.currentState.stateType == StateType.Die) return;
+        //if (fsm.currentState.stateType == StateType.Die) return;
         fsm.SwapStateTo(StateType.Hurt);
     }
 
     private void HandleDie()
     {
         fsm.SwapStateTo(StateType.Die);
+        if (npcType == NPCType.Enemy)
+            scoreUI.AddScore(+10); // recompensa
+        else if (npcType == NPCType.Civil)
+            scoreUI.AddScore(-5); // penalización
     }
     public float DistanceToPlayer()
     {

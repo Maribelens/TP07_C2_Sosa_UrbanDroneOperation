@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6142499024663818197}
   - component: {fileID: 971318883406519962}
+  - component: {fileID: 2265407705792959012}
   m_Layer: 0
   m_Name: HealthSystem
   m_TagString: Untagged
@@ -47,6 +48,29 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   isInvulnerable: 0
+--- !u!136 &2265407705792959012
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072901004395285294}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!1 &5101585806700195568
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +195,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 3.3
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -272,10 +296,7 @@ MonoBehaviour:
   agent: {fileID: 5563459081698679521}
   attackCooldown: 1.5
   lastAttackTime: 0
-  waypointContainers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  waypointContainer: {fileID: 0}
   waypoints: []
   currentWaypoint: 0
   waypointTolerance: 0.2

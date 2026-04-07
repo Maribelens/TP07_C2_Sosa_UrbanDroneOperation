@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor;
+
 public class FsmManager : MonoBehaviour
 {
     [SerializeField] private NPC npc;

@@ -1,3 +1,4 @@
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 public class Hurt : StateBase
@@ -24,20 +25,28 @@ public class Hurt : StateBase
 
         if (npc.hurtTimer <= 0)
         {
-            // Volver a comportamiento normal
-            float dist = npc.DistanceToPlayer();
+            if(npc.npcType == NPCType.Enemy)
+            {
+                // Volver a comportamiento normal
+                float dist = npc.DistanceToPlayer();
 
-            if (dist <= npc.attackRange)
-            {
-                fsm.SwapStateTo(StateType.Attack);
-                return;
+                if (dist <= npc.attackRange)
+                {
+                    fsm.SwapStateTo(StateType.Attack);
+                    return;
+                }
+                else if (dist <= npc.detectionRange)
+                {
+                    fsm.SwapStateTo(StateType.Chase);
+                    return;
+                }
+                else
+                {
+                    fsm.SwapStateTo(StateType.Patrol);
+                    return;
+                }
             }
-            else if (dist <= npc.detectionRange && npc.npcType == NPCType.Enemy)
-            {
-                fsm.SwapStateTo(StateType.Chase);
-                return;
-            }
-            else
+            else // Civil
             {
                 fsm.SwapStateTo(StateType.Patrol);
                 return;
