@@ -27,11 +27,20 @@ public class Hurt : StateBase
             float dist = npc.DistanceToPlayer();
 
             if (dist <= npc.attackRange)
+            {
                 fsm.SwapStateTo(StateType.Attack);
+                return;
+            }
             else if (dist <= npc.detectionRange && npc.npcType == NPCType.Enemy)
+            {
                 fsm.SwapStateTo(StateType.Chase);
+                return;
+            }
             else
+            {
                 fsm.SwapStateTo(StateType.Patrol);
+                return;
+            }
         }
     }
 

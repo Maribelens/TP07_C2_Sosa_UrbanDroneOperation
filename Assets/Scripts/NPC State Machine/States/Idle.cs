@@ -12,13 +12,15 @@ public class Idle : StateBase
     {
         base.OnEnter();
         animator.SetInteger(State, 0);
+        //npc.agent.isStopped = true;
+        //npc.agent.ResetPath();
     }
     public override void OnUpdate()
     {
         base.OnUpdate();
-        fsm.SwapStateTo(StateType.Patrol);
 
-        float dist = npc.DistanceToPlayer();
+        fsm.SwapStateTo(StateType.Patrol);
+        return;
     }
 }
 

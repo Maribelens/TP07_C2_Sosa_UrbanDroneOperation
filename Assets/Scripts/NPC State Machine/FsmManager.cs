@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 public class FsmManager : MonoBehaviour
 {
     [SerializeField] private NPC npc;
-    //[SerializeField] private HealthSystem health;
     [SerializeField] private Animator animator;
     private List<StateBase> states = new List<StateBase>();
     public StateBase currentState;
@@ -11,15 +11,6 @@ public class FsmManager : MonoBehaviour
 
     private void Awake()
     {
-        //npc = GetComponent<NPC>();
-        //npc.health = GetComponent<HealthSystem>();
-
-        //if (npc.health != null)
-        //{
-        //    npc.health.onTakeDamage += HandleTakeDamage;
-        //    npc.health.onDie += HandleDie;
-        //}
-
         states.Add(new Idle());
         states.Add(new Patrol());
         states.Add(new Hurt());
@@ -45,15 +36,6 @@ public class FsmManager : MonoBehaviour
             currentState.OnUpdate();
     }
 
-    //private void OnDestroy()
-    //{
-    //    if (npc.health != null)
-    //    {
-    //        npc.health.onTakeDamage -= HandleTakeDamage;
-    //        npc.health.onDie -= HandleDie;
-    //    }
-    //}
-
     //--------------------- GESTIÓN DE ESTADOS ---------------------
 
     public void SwapStateTo(StateType nextState)
@@ -64,8 +46,6 @@ public class FsmManager : MonoBehaviour
         {
             if (stateBase.stateType == nextState)
             {
-                Debug.Log($"CAMBIO DE ESTADO: {currentState?.stateType} A {nextState}");
-
                 currentState?.OnExit();
                 previousState = currentState;
                 currentState = stateBase;

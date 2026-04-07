@@ -11,7 +11,7 @@ public class Weapon : MonoBehaviour
     {
         if (firePoint == null)
         {
-            Debug.LogError("FirePoint no asignado");
+            //Debug.LogError("FirePoint no asignado");
             return;
         }
 
@@ -20,7 +20,7 @@ public class Weapon : MonoBehaviour
         if (Physics.Raycast(firePoint.position, firePoint.forward, out hit, range))
         {
             Debug.DrawRay(firePoint.position, firePoint.forward * range, Color.red, 0.5f);
-            Debug.Log("Disparo a: " + hit.transform.name);
+            //Debug.Log("Disparo a: " + hit.transform.name);
             //Debug.Log(hit.transform.name);
 
             HealthSystem health = hit.transform.GetComponent<HealthSystem>();
@@ -32,23 +32,16 @@ public class Weapon : MonoBehaviour
             if (health != null)
             {
                 health.TakeDamage(damage);
-                Debug.Log("Daño de disparo aplicado a" + health.gameObject.name);
+                //Debug.Log("Daño de disparo aplicado a" + health.gameObject.name);
             }
             else
             {
-                Debug.LogWarning("NO encontré HealthSystem ni en padres");
+                //Debug.LogWarning("NO encontré HealthSystem ni en padres");
             }
 
             // DEBUG extra
-            Debug.Log("Padre: " + hit.transform.parent?.name);
+            //Debug.Log("Padre: " + hit.transform.parent?.name);
         }
     }
 
 }
-
-//if (hit.transform.CompareTag("Player"))
-//{
-//    //Debug.DrawRay(firePoint.position, firePoint.forward * 50f, Color.red, 1f);
-//    hit.transform.GetComponent<HealthSystem>()?.TakeDamage(10);
-//    Debug.Log("Le pego al jugador!");
-//}

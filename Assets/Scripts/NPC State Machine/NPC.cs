@@ -1,5 +1,7 @@
-using System;
 using UnityEngine;
+using UnityEngine.AI;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 public enum NPCType
 {
     Civil,
@@ -16,8 +18,6 @@ public class NPC : MonoBehaviour
     [HideInInspector] public float hurtTimer;
 
     [Header("Movement")]
-    //public Transform[] waypoints;
-    //public int currentWaypoint = 0;
     public float speed = 2f;
 
     [Header("Ranges")]
@@ -27,43 +27,137 @@ public class NPC : MonoBehaviour
     [Header("References")]
     [SerializeField] private FsmManager fsm;
     public HealthSystem health;
-    public Weapon weapon;
+    [SerializeField] private Weapon weapon;
+    public NavMeshAgent agent;
 
     [Header("Combat")]
     public float attackCooldown = 1.5f;
     public float lastAttackTime;
 
+    [Header("Waypoints")]
+    public Transform waypointContainer;
+    //public List<Transform> waypoints = new List<Transform>();
+    public Transform[] waypoints;
+    public int currentWaypoint;
+    public float waypointTolerance = 0.2f;
+
     private void Awake()
     {
-        //health = GetComponent<HealthSystem>();
-        //fsm = GetComponent<FsmManager>();
-        //weapon = GetComponent<Weapon>();
-
         if (target == null)
         {
             GameObject playerObj = GameObject.FindWithTag("Player");
-
             if (playerObj != null)
                 target = playerObj.transform;
             else
                 Debug.LogError("No se encontró un objeto con tag 'Player'");
+        }
+
+        agent.speed = speed;
+        LoadWaypoints();
+
+        if (waypoints.Length > 0)
+        {
+            currentWaypoint = 0; // o Random.Range(0, waypoints.Length) si querés variar
+            agent.SetDestination(waypoints[currentWaypoint].position);
+        }
+
+        //if (waypoints.Count > 0)
+        //{
+        //    //// Civiles empiezan en un waypoint aleatorio
+        //    //if (npcType == NPCType.Civil)
+        //    //    currentWaypoint = Random.Range(0, waypoints.Count);
+
+        //    //// Enemigos empiezan siempre en el primero (ruta fija)
+        //    //else if (npcType == NPCType.Enemy)
+
+        //agent.SetDestination(waypoints[currentWaypoint].position);
+    }
+
+
+    private void LoadWaypoints()
+    {
+        //waypoints.Clear();
+        //foreach (Transform container in waypointContainer)
+        //{
+        //    if (container == null) continue;
+        //    for (int i = 0; i < container.childCount; i++)
+        //    {
+        //        waypoints.Add(container.GetChild(i));
+        //    }
+        //}
+
+        if (waypointContainer != null)
+        {
+            waypoints = new Transform[waypointContainer.childCount];
+            for (int i = 0; i < waypointContainer.childCount; i++)
+            {
+                waypoints[i] = waypointContainer.GetChild(i);
+            }
         }
     }
 
     private void OnEnable()
     {
         if (health == null) return;
-
         health.onTakeDamage += HandleTakeDamage;
         health.onDie += HandleDie;
     }
-
     private void OnDisable()
     {
         if (health == null) return;
-
         health.onTakeDamage -= HandleTakeDamage;
         health.onDie -= HandleDie;
+    }
+
+    public void MoveTo(Vector3 targetPosition)
+    {
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPosition,
+            speed * Time.deltaTime
+        );
+    }
+
+    public void PatrolMovement()
+    {
+        if (waypoints == null || waypoints.Length == 0) return;
+
+        Transform targetWP = waypoints[currentWaypoint];
+        Debug.Log("NPC va hacia: " + targetWP.name);
+
+        if (!agent.hasPath || agent.remainingDistance < waypointTolerance)
+        {
+            agent.speed = speed;
+            agent.SetDestination(targetWP.position);
+        }
+
+        if (!agent.pathPending && agent.remainingDistance <= waypointTolerance)
+        {
+            currentWaypoint = (currentWaypoint + 1) % waypoints.Length;
+            agent.SetDestination(waypoints[currentWaypoint].position);
+        }
+    }
+
+    //if (waypoints == null || waypoints.Length == 0) return;
+
+    //Transform targetWP = waypoints[currentWaypoint];
+
+    //if (!agent.hasPath || agent.remainingDistance < waypointTolerance)
+    //{
+    //    agent.speed = speed;
+    //    agent.SetDestination(targetWP.position);
+    //}
+
+    //if (!agent.pathPending && agent.remainingDistance <= waypointTolerance)
+    //{
+    //    currentWaypoint = (currentWaypoint + 1) % waypoints.Length;
+    //}
+
+
+public void ChasePLayer()
+    {
+        if (target == null) return;
+        agent.SetDestination(target.position);
     }
 
     private void HandleTakeDamage()
@@ -76,7 +170,6 @@ public class NPC : MonoBehaviour
     {
         fsm.SwapStateTo(StateType.Die);
     }
-
     public float DistanceToPlayer()
     {
         return Vector3.Distance(transform.position, target.position);
@@ -86,10 +179,15 @@ public class NPC : MonoBehaviour
     {
         return Time.time >= lastAttackTime + attackCooldown;
     }
-
     public void DoAttack()
     {
+        if (npcType == NPCType.Civil) return; // civiles no atacan
+        if (weapon == null) return;
         if (!CanAttack()) return;
+
         lastAttackTime = Time.time;
+        weapon.Shoot();
     }
-}
+    }
+
+

@@ -41,7 +41,7 @@ public class HealthSystem : MonoBehaviour
             onLifeUpdated?.Invoke(currentHealth, maxHealth);
         }
 
-        Debug.Log($"RECIBI DAÑO: {amount} en {gameObject.name}");
+        //Debug.Log($"RECIBI DAÑO: {amount} en {gameObject.name}");
         //Debug.Log("DoDamage", gameObject);
     }
 }

@@ -13,36 +13,23 @@ public class Attack : StateBase
         base.OnEnter();
         animator.SetInteger(State, 3);
     }
-
     public override void OnUpdate()
     {
         if (npc.target == null) return;
-
         float distance = npc.DistanceToPlayer();
-
         //Transiciones
         if (distance > npc.attackRange)
         {
             fsm.SwapStateTo(StateType.Chase);
             return;
         }
-        
         //Mirar al jugador
         Vector3 dir = (npc.target.position - npc.transform.position).normalized;
         npc.transform.forward = dir;
-
         if (npc.CanAttack())
         {
             npc.DoAttack();
-            npc.weapon.Shoot();
-            Debug.Log("NPC dispara!");
+            //Debug.Log("NPC dispara!");
         }
     }
-
-    public override void OnExit()
-    {
-        base.OnExit();
-        //Renaudar movimiento
-    }
 }
-

@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using UnityEngine;
 
 public class Patrol : StateBase
@@ -7,36 +8,36 @@ public class Patrol : StateBase
         base.Initialize(animator, fsmManager, npc);
         stateType = StateType.Patrol;
     }
-
     public override void OnEnter()
     {
         base.OnEnter();
         animator.SetInteger(State, 1);
+        //Debug.Log($"NPC{npc.name} va hacia: " + npc.waypoints[npc.currentWaypoint].name);
     }
-
     public override void OnUpdate()
     {
         base.OnUpdate();
+        if (npc.npcType == NPCType.Civil)
+        {
+            npc.PatrolMovement();
+            // Transiciones
+            float dist = npc.DistanceToPlayer();
+            //Debug.Log($"[Patrol]Distancia al player: {dist}");
+            if (dist < npc.detectionRange)
+            {
+                fsm.SwapStateTo(StateType.Idle);
+                return;
+            }
+        }
 
-        //if (npc.waypoints.Length == 0) return;
+        if (npc.npcType == NPCType.Enemy)
+        {
+            npc.PatrolMovement();
+            if (npc.DistanceToPlayer() < npc.detectionRange)
+            {
+                fsm.SwapStateTo(StateType.Chase);
+            }
+        }
 
-        //Transform target = npc.waypoints[npc.currentWaypoint];
-
-        //npc.transform.position = Vector3.MoveTowards(
-        //    npc.transform.position,
-        //    npc.target.position,
-        //    npc.speed * Time.deltaTime
-        //);
-
-        //if (Vector3.Distance(npc.transform.position, target.position) < 0.2f)
-            //npc.currentWaypoint = (npc.currentWaypoint + 1) % npc.waypoints.Length;
-
-        // Transiciones
-        float dist = npc.DistanceToPlayer();
-        //Debug.Log($"[Patrol]Distancia al player: {dist}");
-
-        if (dist < npc.detectionRange)
-            fsm.SwapStateTo(StateType.Chase);
-        //Debug.Log("Drone detectado, cambiando a Chase");
     }
 }

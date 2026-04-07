@@ -17,28 +17,20 @@ public class Chase : StateBase
     {
         base.OnUpdate();
 
+        npc.ChasePLayer();
+
         float distance = npc.DistanceToPlayer();
-                                                                          
         // Si está cerca, atacar
         if (distance <= npc.attackRange)
         {
             fsm.SwapStateTo(StateType.Attack);
             return;
         }
-
         // Si lo pierde, volver a patrulla
-        if (distance > npc.detectionRange)
+        if (distance > npc.detectionRange * 1.5f)
         {
             fsm.SwapStateTo(StateType.Patrol);
             return;
         }
-
-        // Perseguir
-        npc.transform.position = Vector3.MoveTowards(
-            npc.transform.position,
-            npc.target.position,
-            npc.speed * Time.deltaTime
-        );
     }
 }
-
